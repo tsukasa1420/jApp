@@ -1,0 +1,38 @@
+a{
+	text-decoration: none;
+	color: #363;
+}
+a:hover{
+	color: #9C9;
+}
+p{
+	margin: 0;
+	margin-top: 10px;
+
+	text-align: center;
+}
+table, td{
+	border-collapse: collapse;
+	border: 2px solid #CCC;
+	/* border: none; */
+}
+td{
+	padding: 5px 15px;
+}
+#container{
+	margin: 0 auto;
+	width: 300px;
+}
+.containtsBox{
+	padding: 5px;
+
+	border: 1px solid #CCC;
+}
+.linkBox{
+	padding: 5px;
+
+	background: #CFC;
+	border-radius: 10px;
+
+	text-align: center;
+}
