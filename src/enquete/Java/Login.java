@@ -11,9 +11,11 @@ public class Login {
 		try {
 			PrintWriter out = response.getWriter();
 			String userName = request.getParameter("userName");
-			String pass = request.getParameter("userName");
+			String password = request.getParameter("password");
 
 			out.println(userName);
+			out.println(password);
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
