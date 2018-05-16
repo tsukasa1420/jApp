@@ -9,13 +9,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/UserMake")
-public class UserMake extends HttpServlet {
+import enquete.Java.Login;
+	/**
+		userMake.jsp
+		-> userOperate.servlet
+		-> Login.userMakeFunc()
+		-> DAO_user.userMake()
+		-> SQL
+	*/
+@WebServlet("/UserOperate")
+public class UserOperate extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = response.getWriter();
 
-		out.println("User Make Link OK.");
+		Login useL = new Login();
+
+		useL.userMakeFunc(request, response);
+		out.println("Finish<br>");
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);

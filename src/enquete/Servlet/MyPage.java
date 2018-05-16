@@ -20,10 +20,13 @@ public class MyPage extends HttpServlet {
 		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = response.getWriter();
 
-		out.println("Link OK." + "<br>");
+		// judge LOGIN or LOGOUT
+		String log = request.getParameter("log");
 
 		Login useL = new Login();
-		useL.loginFunc(request, response);
+
+		if( log.equals("out") )useL.logoutFunc(request, response);
+		if( log.equals("in") ) useL.loginFunc(request, response);
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
