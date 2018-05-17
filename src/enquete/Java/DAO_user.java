@@ -38,7 +38,7 @@ public class DAO_user {
 	public BeanUser login( String userName, String password ) {
 		if( cone == null ) useDB();
 
-		// prepare SQL
+		// SQLを使う準備。
 		PreparedStatement ps =null;
 		ResultSet rs = null;
 		String sql = null;
@@ -48,14 +48,14 @@ public class DAO_user {
 			ps = cone.prepareStatement(sql);
 			rs = ps.executeQuery();
 
-			// DB 1 line read.
+			// DBの選択した1行を読む。
 			rs.next();
 
-			// DB 1 line datas get.
-			String name = rs.getString("name");
+			// DBの1行のデータを取得する。
+			String name	= rs.getString("name");
 			String pass	= rs.getString("pass");
 
-			// DB 1 line data recode.
+			// 取得したデータを豆に入れる。
 			BeanUser mame = new BeanUser(name, pass);
 
 			return mame;

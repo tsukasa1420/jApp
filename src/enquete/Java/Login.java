@@ -17,8 +17,9 @@ public class Login {
 		ログイン処理
 	*/
 	public void loginFunc(HttpServletRequest request, HttpServletResponse response) {
+		PrintWriter out = null;
 		try {
-			PrintWriter out = response.getWriter();
+			out = response.getWriter();
 
 			// Get input data.
 			String userName = request.getParameter("userName");
@@ -29,12 +30,12 @@ public class Login {
 
 			BeanUser mameUser =  daoUser.login(userName, password);
 
+			out.println("入名\t\t：" + userName + "<br>");
+			out.println("入パス\t：" + password + "<br>");
 
 			out.println("DB名\t\t：" + mameUser.getUserName() + "<br>");
 			out.println("DBパス\t：" + mameUser.getPassword() + "<br>");
 
-			out.println("入名\t\t：" + userName + "<br>");
-			out.println("入パス\t：" + password + "<br>");
 
 			// login check PASS or BLOCK
 			if(		userName.equals(mameUser.getUserName()) &&
@@ -65,11 +66,15 @@ public class Login {
 			}
 		}
 		catch (IOException e) {
-			System.out.println("PrintWriterクラスのエラー");
+			System.out.println("PrintWriterクラスのエラー<br>");
 		}
 		catch (ServletException e) {
-			System.out.println("forward()のエラー");
+			System.out.println("forward()のエラー<br>");
 		}
+		catch (Exception e) {
+			out.println("何かしらにエラー<br>");
+		}
+
 	}
 
 	/**
@@ -185,8 +190,6 @@ public class Login {
 
 			// ログイン状態にする
 			loginFunc(request, userName);
-
-//
 		}
 		catch (IOException e) {
 			e.printStackTrace();

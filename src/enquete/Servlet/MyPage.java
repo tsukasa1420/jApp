@@ -1,7 +1,6 @@
 package enquete.Servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,13 +17,12 @@ import enquete.Java.Login;
 public class MyPage extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html; charset=UTF-8");
-		PrintWriter out = response.getWriter();
-
-		// judge LOGIN or LOGOUT
-		String log = request.getParameter("log");
+//		PrintWriter out = response.getWriter();
 
 		Login useL = new Login();
 
+		// ログイン処理かログアウト処理かを取得し、判断する
+		String log = request.getParameter("log");
 		if( log.equals("out") )useL.logoutFunc(request, response);
 		if( log.equals("in") ) useL.loginFunc(request, response);
 	}

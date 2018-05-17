@@ -1,6 +1,6 @@
 package enquete.Java;
 
-public class BeanUser {
+public class BeanUser{
 	private String userName;
 	private String password;
 

@@ -11,17 +11,30 @@ p{
 
 	text-align: center;
 }
-table, td{
+ul{
+	margin: 0;
+}
+table{
+	margin: 0 auto;
+	margin-bottom: 15px;
 	border-collapse: collapse;
-	border: 2px solid #CCC;
+	max-width: 95%;
+}
+table, th, td{
+	border-top: 2px solid #CCC;
+	border-bottom: 2px solid #CCC;
 	/* border: none; */
+}
+th{
+	background: #CFC;
+	color: #363;
 }
 td{
 	padding: 5px 15px;
 }
 #container{
 	margin: 0 auto;
-	width: 300px;
+	width: 500px;
 }
 .containtsBox{
 	padding: 5px;
@@ -30,10 +43,18 @@ td{
 	border: 1px solid #CCC;
 }
 .linkBox{
+	margin: 0 auto;
 	padding: 5px;
+	width: 50%;
 
 	background: #CFC;
 	border-radius: 10px;
 
 	text-align: center;
+}
+.answerBox{
+	min-width: 200px;
+	max-width: 300px;
+	min-height: 50px;
+	max-height: 150px;
 }

@@ -1,4 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.ArrayList"%>
+<%@page import="enquete.Java.Enquete"%>
 <%
 	// be usable session
 	HttpSession loginSession = request.getSession(false);
@@ -9,6 +13,10 @@
 		RequestDispatcher rd = request.getRequestDispatcher("/enquete/login.jsp");
 		rd.forward(request, response);
 	}
+
+	// アンケート回答ページへのリンクを作る
+	Enquete enq = new Enquete();
+	enq.table_list(request);
 %>
 <!DOCTYPE html>
 <html>
@@ -21,10 +29,18 @@
 		<div id="container">
 			<div class="containtsBox">
 				MyPage
-				<p style="text-align: right;">
-					<%= session.getAttribute("userName") %> さんがログイン中<br>
-					<a href="/jApp/MyPage?log=out">ログアウト</a>
-				</p>
+					<p style="text-align: right;">
+						<%= session.getAttribute("userName") %> さんがログイン中<br>
+						<a href="/jApp/MyPage?log=out">ログアウト</a>
+					</p>
+				<form action="/jApp/Answer" method="post">
+					<ul>
+						<c:forEach items="${enquete_list}" var="enquete_name">
+							<li><a href="${ enquete_name.getUrl() }">${enquete_name.getEnqName()}</a>
+						</c:forEach>
+					</ul>
+					<%-- <a href="${ answerPage }">123</a> --%>
+				</form>
 			</div>
 			<jsp:include page="footLink.html"></jsp:include>
 		</div>
