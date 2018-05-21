@@ -1,8 +1,8 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.ArrayList"%>
 <%@page import="enquete.Java.Enquete"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 	// be usable session
 	HttpSession loginSession = request.getSession(false);
@@ -33,13 +33,12 @@
 						<%= session.getAttribute("userName") %> さんがログイン中<br>
 						<a href="/jApp/MyPage?log=out">ログアウト</a>
 					</p>
-				<form action="/jApp/Answer" method="post">
+				<form action="/jApp/EnqueteOperate" method="post">
 					<ul>
 						<c:forEach items="${enquete_list}" var="enquete_name">
 							<li><a href="${ enquete_name.getUrl() }">${enquete_name.getEnqName()}</a>
 						</c:forEach>
 					</ul>
-					<%-- <a href="${ answerPage }">123</a> --%>
 				</form>
 			</div>
 			<jsp:include page="footLink.html"></jsp:include>

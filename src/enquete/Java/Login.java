@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import enquete.DAO.DAO_user;
+
 /**
 	ユーザー情報を管理するクラス
 */

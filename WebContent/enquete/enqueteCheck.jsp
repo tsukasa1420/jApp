@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<% int qNum = 0; %>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -13,18 +14,24 @@
 				Question  check
 				<table>
 					<tr>
-						<th>質問</th><th>回答</th>
+						<th colspan="2">質問</th><th style="min-width: 150px;">回答</th>
 					</tr>
 					<c:forEach items="${ qList }" var="q">
+						<%
+							qNum++;
+							String qAnswer = "qAnswer" + qNum;
+
+						%>
 						<tr>
+							<td>Q<%=qNum %></td>
 							<td>${ q }</td>
-							<td>aaaaa</td>
+							<td><%= session.getAttribute(qAnswer) %></td>
 						</tr>
 					</c:forEach>
 				</table>
-				<form action="/jApp/Answer" method="post">
+				<form action="/jApp/EnqueteOperate" method="post">
 					<p>
-						<input type="hidden" name="ans" value="check">
+						<input type="hidden" name="ans" value="send">
 						<input type="submit" value="送信">
 					</p>
 				</form>

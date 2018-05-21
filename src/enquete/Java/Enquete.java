@@ -29,25 +29,25 @@ public class Enquete {
 	*/
 	public void table_list(HttpServletRequest request) {
 		// ここをDB化
-		List<DumBean> dbList = table_list_dum();
+		List<BeanDum> dbList = table_list_dum();
 
 
 		// DBからとってきた
 		HttpSession session = request.getSession(false);
 		session.setAttribute("enquete_list", dbList);
 	}
-	protected List<DumBean> table_list_dum() {
+	protected List<BeanDum> table_list_dum() {
 		// DBから持ってきた体で
-		List<DumBean> dbList = new ArrayList<>();
-		String pri, url = "/jApp/Answer?jump=";
+		List<BeanDum> dbList = new ArrayList<>();
+		String pri, url = "/jApp/EnqueteOperate?jump=";
 		pri = "food";
-		dbList.add( new DumBean(pri, "食べ物アンケート", url + pri) );
+		dbList.add( new BeanDum(pri, "食べ物アンケート", url + pri) );
 
 		pri = "anml";
-		dbList.add( new DumBean(pri, "動物アンケート", url + pri) );
+		dbList.add( new BeanDum(pri, "動物アンケート", url + pri) );
 
 		pri = "food2";
-		dbList.add( new DumBean(pri, "ごはんアンケート", url + pri) );
+		dbList.add( new BeanDum(pri, "ごはんアンケート", url + pri) );
 
 		return dbList;
 	}
@@ -57,26 +57,42 @@ public class Enquete {
 		アンケートの質問をDBからとってくる。
 	*/
 	public void getQuestion(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		PrintWriter out = response.getWriter();
+//		PrintWriter out = response.getWriter();
 
 		String pri = request.getParameter("jump");
 
 		// DBのデータを格納したリスト
-		List<String> dbList = dumDB();
-		request.setAttribute("qList", dbList);
+		List<String> dbList = dumDB(pri);
+		HttpSession session = request.getSession(false);
+		session.setAttribute("qList", dbList);
 
 		// 指定のページに飛ぶ
-		RequestDispatcher rd = request.getRequestDispatcher("/enquete/answer.jsp");
+		RequestDispatcher rd = request.getRequestDispatcher("/enquete/enquete.jsp");
 		rd.forward(request, response);
 	}
-	protected List<String> dumDB(){
+	protected List<String> dumDB(String pri){
+		String[] quest = new String[5];
+
+		if( pri.equals("food") ) {
+			quest[0] = "好きな食べ物は？";
+			quest[1] = "嫌いな食べ物は？";
+			quest[2] = "最後の晩餐は？";
+			quest[3] = "料理はする？";
+			quest[4] = "得意料理はあああああああああああああああああああああああああああああああああああああああああああああああ？";
+		}
+		else if( pri.equals("anml") ) {
+			quest[0] = "犬好き？";
+			quest[1] = "猫大好き？";
+			quest[2] = "ウサギ好き？";
+			quest[3] = "鳥好き？";
+			quest[4] = "アメリカ原産で日本の侵略的外来種の選ばれるミシシッピアカミミガメ好き？";
+		}
+		else {
+			for (int i = 0; i < quest.length; i++)  quest[i] = "エラー" + i;
+		}
 		// DBから持ってきた体で
 		List<String> list = new ArrayList<String>();
-		list.add("Q1<br>好きな食べ物は？");
-		list.add("Q2<br>嫌いな食べ物は？");
-		list.add("Q3<br>最後の晩餐は？");
-		list.add("Q4<br>料理はする？");
-		list.add("Q5<br>得意料理はあああああああああああああああああああああああああああああああああああああああああああああああ？");
+		for (int i = 0; i < quest.length; i++) list.add( quest[i] );
 		return list;
 	}
 
@@ -84,8 +100,62 @@ public class Enquete {
 		アンケートの回答確認ページに行く
 	*/
 	public void checkProsess(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+//		request.setCharacterEncoding("UTF-8");
+
+		HttpSession session = request.getSession(false);
+		int qNum = (int)session.getAttribute("qNum");
+
+
+		System.out.println(qNum);
+
+//		List<String> answers = new ArrayList<>();
+		for (int i = 1; i <= qNum; i++) {
+			session.setAttribute( "qAnswer" + i, request.getParameter("qAnswer" + i) );
+			System.out.println( "# " + request.getParameter("qAnswer" + i) );
+		}
+
+
+
+
 		// 指定のページに飛ぶ
-		RequestDispatcher rd = request.getRequestDispatcher("/enquete/answerCheck.jsp");
+		RequestDispatcher rd = request.getRequestDispatcher("/enquete/enqueteCheck.jsp");
 		rd.forward(request, response);
 	}
+
+
+	/**
+		アンケートの回答確認ページでOKした場合の処理
+	*/
+	public void setEnquete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		try {
+			PrintWriter out =  response.getWriter();
+
+			// セッションを利用して、質問数（qNum）・回答（ansList）を取得している。
+			HttpSession session = request.getSession(false);
+			int qNum = (int)session.getAttribute("qNum");
+			List<String> ansList = new ArrayList<>();
+			for (int i = 0; i < qNum; i++) {
+				ansList.add( request.getParameter("qAnswer" + i) );
+			}
+			for (String string : ansList) {
+				System.out.println("% : " + string);
+			}
+
+			// DBに格納する処理
+
+
+
+
+			// 指定のページに飛ぶ
+			RequestDispatcher rd = request.getRequestDispatcher("/enquete/enqueteFinish.jsp");
+			rd.forward(request, response);
+		} catch (IOException e) {
+			System.out.println( "" );
+			System.out.println( "プリントライターエラー" );
+		}
+		catch (ServletException e) {
+			System.out.println( "フォワードエラー" );
+		}
+	}
+
 }

@@ -1,11 +1,13 @@
 package enquete.Java;
 
-public class DumBean{
+import java.io.Serializable;
+
+public class BeanDum implements Serializable{
 	protected String pri;
 	protected String enqName;
 	protected String url;
 
-	public DumBean(String pri, String enqName, String url) {
+	public BeanDum(String pri, String enqName, String url) {
 		this.pri = pri;
 		this.enqName = enqName;
 		this.url = url;

@@ -4,10 +4,14 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Insert title here</title>
-		<link rel="stylesheet" href="style/whole.css">
+		<link rel="stylesheet" href="/jApp/enquete/style/whole.css">
 	</head>
 	<body>
-
-		<jsp:include page="footLink.html"></jsp:include>
+		<div id="container">
+			<div class="containtsBox">
+			finish
+			</div>
+			<jsp:include page="footLink.html"></jsp:include>
+		</div>
 	</body>
 </html>

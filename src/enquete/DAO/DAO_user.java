@@ -1,42 +1,20 @@
-package enquete.Java;
+package enquete.DAO;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DAO_user {
-	protected Connection cone;
-	/**
-		DB connection
-	*/
-	public void useDB() {
-		try {
-			// connect JDBC
-			Class.forName("com.mysql.cj.jdbc.Driver");
+import enquete.Java.BeanUser;
 
-			// login DB
-			String url = "jdbc:mysql://localhost/jApp?serverTimezone=UTC&useSSL=false";
-			String user = "student";
-			String pass = "himitu";
-			cone = DriverManager.getConnection(url, user, pass);
-		}
-		catch (ClassNotFoundException e) {
-			// Class.forName ERROR
-			System.out.println("Class.forName ERROR");
-		}
-		catch (SQLException e) {
-			// Connection ERROR
-			System.out.println("Connection ERROR");
-		}
-	}
+public class DAO_user {
 
 	/**
 		ログイン時、DBから一致するユーザー情報を取得する
 	*/
 	public BeanUser login( String userName, String password ) {
-		if( cone == null ) useDB();
+		DAO_manager dm = new DAO_manager();
+
+		if( dm.cone == null ) dm.useDB();
 
 		// SQLを使う準備。
 		PreparedStatement ps =null;
@@ -45,7 +23,7 @@ public class DAO_user {
 
 		try {
 			sql = "SELECT * FROM user_table WHERE name='" + userName + "' AND pass='" + password + "';";
-			ps = cone.prepareStatement(sql);
+			ps = dm.cone.prepareStatement(sql);
 			rs = ps.executeQuery();
 
 			// DBの選択した1行を読む。
@@ -70,7 +48,8 @@ public class DAO_user {
 		ユーザー登録処理
 	*/
 	public void userMake( String userName, String password, String mail, int birth ) {
-		if( cone == null ) useDB();
+		DAO_manager dm = new DAO_manager();
+		if( dm.cone == null ) dm.useDB();
 
 		// prepare SQL
 		String sql = null;
@@ -79,7 +58,7 @@ public class DAO_user {
 
 		try {
 			sql ="INSERT INTO user_table( name, pass, mail, birthday ) VALUES( ?, ?, ?, ? );";
-			ps = cone.prepareStatement(sql);
+			ps = dm.cone.prepareStatement(sql);
 
 
 			// Set "?" SQL statement.
@@ -107,7 +86,8 @@ public class DAO_user {
 		ユーザー情報の変更
 	*/
 	public void userInfoEdit( String userName, String password ) {
-		if( cone == null ) useDB();
+		DAO_manager dm = new DAO_manager();
+		if( dm.cone == null ) dm.useDB();
 	}
 
 

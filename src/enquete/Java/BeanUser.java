@@ -1,6 +1,8 @@
 package enquete.Java;
 
-public class BeanUser{
+import java.io.Serializable;
+
+public class BeanUser implements Serializable{
 	private String userName;
 	private String password;
 
