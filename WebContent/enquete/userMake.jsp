@@ -1,11 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
-	// be usable session
-	HttpSession loginSession = request.getSession(false);
-
-	// judge LOGIN or LOGOUT ( areba )
-	if( loginSession.getAttribute("ログイン") != null ){
+	// ログイン済みかを判定・ログイン済みであればマイページへ飛ぶ
+	if( session.getAttribute("ログイン") != null ){
 		// jump jsp. and prepare.
 		RequestDispatcher rd = request.getRequestDispatcher("/enquete/myPage.jsp");
 		rd.forward(request, response);

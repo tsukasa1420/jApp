@@ -10,44 +10,10 @@ import enquete.Java.BeanEnquete;
 
 public class DAO_enquete {
 	/**
-		↓のテーブルを取得する。
-		＋―――	＋―――――	＋―――――	＋―――――	＋―――――	＋―――――	＋―――――	＋
-		｜主　　	｜アンケ名	｜Q1			｜Q2			｜Q3			｜Q4			｜Q5			｜
-		＋―――	＋―――――	＋―――――	＋―――――	＋―――――	＋―――――	＋―――――	＋
-		｜food	｜食べ物系	｜肉好き？	｜魚好き？	｜野菜好き？	｜チョコ好き？	｜ミント好き？	｜
-		｜anim	｜動物系		｜犬好き？	｜猫好き？	｜ウサギ好き？	｜鳥好き？	｜魚好き？	｜
-		｜		｜			｜			｜			｜			｜			｜			｜
-		＋―――	＋―――――	＋―――――	＋―――――	＋―――――	＋―――――	＋―――――	＋
-	*/
-	public BeanEnquete getQuestion(String key) {
-		// DBを使えるようにしている
-		DAO_manager dm = new DAO_manager();
-		if(dm.cone == null) dm.useDB();
-
-		// SQLを使う準備
-		String sql = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			// SQL文を指定して実行
-			sql = "SELECT * FROM test_enq WHERE id=?";
-			ps = dm.cone.prepareStatement(sql);
-			ps.setString(1, key);
-			rs = ps.executeQuery();
-
-			rs.next();
-			return new BeanEnquete( rs.getString("nameenq"), rs.getString("q1"), rs.getString("q2"),rs.getString("q3"), rs.getString("q4"), rs.getString("q5") );
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println( "sql error" );
-		}
-		return null;
-	}
-
-	/**
-		レコードの数（行数）とアンケート名を取得する
+	レコードの数（行数）とアンケート名を取得する
 		リストのサイズ＝レコード数
+		リストに全レコードのアンケート名を入れる
+		その数がレコード数
 	*/
 	public List<BeanEnquete> getEnqName(){
 		// DBを使えるようにしている
@@ -66,47 +32,81 @@ public class DAO_enquete {
 			rs = ps.executeQuery();
 
 			List<BeanEnquete> list = new ArrayList<>();
-			while( rs.next() ) {
 
-				list.add( new BeanEnquete( rs.getString("id"), rs.getString("nameenq") ) );
+			String url = "/jApp/EnqueteOperate?jump=";
+			while( rs.next() ) {
+				list.add( new BeanEnquete( rs.getString("id"), rs.getString("nameenq"), url + rs.getString("id") ) );
 			}
 			return list;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println( "sql error" );
 		}
 		finally {
 			dm.closePreparedStatement(ps);
 			dm.closeResultSet(rs);
+			dm.closeConnection(dm.cone);
 		}
 		return null;
 	}
 
+	/**
+	主キーから質問（5つ）を取得する
+		主キーを引数にして主キーのレコードのデータを取得してリストで返している
+		↓のテーブルを取得する。
+		＋―――	＋―――――	＋―――――	＋―――――	＋―――――	＋―――――	＋―――――	＋
+		｜主　　	｜アンケ名	｜Q1			｜Q2			｜Q3			｜Q4			｜Q5			｜
+		＋―――	＋―――――	＋―――――	＋―――――	＋―――――	＋―――――	＋―――――	＋
+		｜food	｜食べ物系	｜肉好き？	｜魚好き？	｜野菜好き？	｜チョコ好き？	｜ミント好き？	｜
+		｜anim	｜動物系		｜犬好き？	｜猫好き？	｜ウサギ好き？	｜鳥好き？	｜魚好き？	｜
+		｜		｜			｜			｜			｜			｜			｜			｜
+		＋―――	＋―――――	＋―――――	＋―――――	＋―――――	＋―――――	＋―――――	＋
+	*/
+	public List<String> getQuestion(String pri) {
+		// DBを使えるようにしている
+		DAO_manager dm = new DAO_manager();
+		if(dm.cone == null) dm.useDB();
+
+		// SQLを使う準備
+		String sql = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			// SQL文を指定して実行
+			sql = "SELECT * FROM test_enq WHERE id=?";
+			ps = dm.cone.prepareStatement(sql);
+			ps.setString(1, pri);
+			rs = ps.executeQuery();
+
+			rs.next();
+
+			List<String> setQuestion = new ArrayList<>();
+			setQuestion.add( rs.getString("q1") );
+			setQuestion.add( rs.getString("q2") );
+			setQuestion.add( rs.getString("q3") );
+			setQuestion.add( rs.getString("q4") );
+			setQuestion.add( rs.getString("q5") );
+
+			return setQuestion;
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println( "SQL getQuestion()メソッドでエラー" );
+		}
+		finally {
+			dm.closePreparedStatement(ps);
+			dm.closeResultSet(rs);
+			dm.closeConnection(dm.cone);
+		}
+		return null;
+	}
 
 	/**
-		DBに回答を記録する。
+	DBに回答を記録する。
 	*/
-	public void addAnswer() {
-//		HttpSession session = request.getSession(false);
-//		int qNum = (int)session.getAttribute("qNum");
-//
-//
-//		for (int i = 1; i <= qNum; i++) {
-//			session.setAttribute( "qAnswer" + i, request.getParameter("qAnswer" + i) );
-//			System.out.println( "# " + request.getParameter("qAnswer" + i) );
-//		}
-
-		int qNum = 5;
-		List<String> qAnswer = new ArrayList<>();
-		for (int i = 0; i < qNum; i++) {
-			qAnswer.add( "A" + (i + 1) );
-		}
-		for (String string : qAnswer) {
-			System.out.println("& " + string);
-		}
-
-
-
+	public void addAnswer( String userName, String enqPri, List<String> ansList ) {
 		// DBを使えるようにしている
 		DAO_manager dm = new DAO_manager();
 		if(dm.cone == null) dm.useDB();
@@ -117,53 +117,173 @@ public class DAO_enquete {
 
 		try {
 			// SQL文を指定して実行
-			sql = "INSERT INTO test_ans( q1, q2, q3, q4, q5 ) VALUES( ?, ?, ?, ?, ? )";
+			sql = "INSERT INTO test_ans( user_name, enq_name, a1, a2, a3, a4, a5 ) VALUES( ?, ?, ?, ?, ?, ?, ? )";
 			ps = dm.cone.prepareStatement(sql);
-
-			System.out.println("check01");
-
-//			for ( int i = 1; i <= qAnswer.size(); i++ ) {
-//				ps.setString( i, qAnswer.get(i - 1) );
-//			}
-
-			ps.setString( 1, "a1" );
-			ps.setString( 2, "a2" );
-			ps.setString( 3, "a3" );
-			ps.setString( 4, "a4" );
-			ps.setString( 5, "a5" );
-
-			System.out.println("check02");
-
+			ps.setString( 1, userName );
+			ps.setString( 2, enqPri );
+			for ( int i = 3; i < ( ansList.size() + 3 ); i++ ) {
+				ps.setString( i, ansList.get(i - 3) );
+			}
 			ps.executeUpdate();
-
-			System.out.println("check03");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println( "sql error" );
+			System.out.println( "sql error・addAnswer" );
 		}
 		finally {
 			dm.closePreparedStatement(ps);
+			dm.closeConnection(dm.cone);
 		}
 	}
 
-	public void testMain() {
-		BeanEnquete be = getQuestion("food");
-		System.out.println( "#" + be.getNameEnq() );
-		System.out.println( "#" + be.getQ1() );
-		System.out.println( "#" + be.getQ2() );
-		System.out.println( "#" + be.getQ3() );
-		System.out.println( "#" + be.getQ4() );
-		System.out.println( "#" + be.getQ5() );
-		System.out.println();
+	/**
+	解答済みアンケートを全表示
+	*/
+	public List<BeanEnquete> resultViewAll(String userID) {
+		// DBを使えるようにしている
+		DAO_manager dm = new DAO_manager();
+		if(dm.cone == null) dm.useDB();
 
-		List<BeanEnquete> list = getEnqName();
-		for (BeanEnquete string : list) {
-			System.out.print ( "%" + string.getEnqId() );
-			System.out.println ( "%" + string.getNameEnq());
+		// SQLを使う準備
+		String sql = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			// SQL文を指定して実行
+			sql = "SELECT * FROM test_ans WHERE user_name = ?";
+			ps = dm.cone.prepareStatement(sql);
+			ps.setString(1, userID);
+			rs = ps.executeQuery();
+
+			List<BeanEnquete> beList = new ArrayList<>();
+			while ( rs.next() ) {
+				int priNo = rs.getInt("id");
+				String enqID = rs.getString("enq_name");
+				beList.add( new BeanEnquete(priNo, enqID) );
+			}
+			return beList;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println( "sql error・addAnswer" );
+			return null;
 		}
-		System.out.println( "%" + list.size() );
-		System.out.println();
+		finally {
+			dm.closePreparedStatement(ps);
+			dm.closeResultSet(rs);
+			dm.closeConnection(dm.cone);
+		}
+	}
 
-		addAnswer();
+	/**
+	解答済みアンケート、回答結果リストを返す
+	*/
+	public List<String> resultView_getAnswer(int priNo) {
+		// DBを使えるようにしている
+		DAO_manager dm = new DAO_manager();
+		if(dm.cone == null) dm.useDB();
+
+		// SQLを使う準備
+		String sql = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			// SQL文を指定して実行
+			sql = "SELECT * FROM test_ans WHERE id = ?";
+			ps = dm.cone.prepareStatement(sql);
+			ps.setInt(1, priNo);
+			rs = ps.executeQuery();
+
+			rs.next();
+
+			List<String> aList = new ArrayList<>();
+			for (int i = 1; i <= 5; i++) {
+				aList.add( rs.getString("a" + i) );
+			}
+			return aList;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println( "error・アンケート個別表示の回答5つをとるところ" );
+			return null;
+		}
+		finally {
+			dm.closePreparedStatement(ps);
+			dm.closeResultSet(rs);
+			dm.closeConnection(dm.cone);
+		}
+	}
+
+	/**
+	解答済みアンケート、なんのアンケート(enqID)かを返す
+	*/
+	public String resultView_getEnqID(int priNo) {
+		// DBを使えるようにしている
+		DAO_manager dm = new DAO_manager();
+		if(dm.cone == null) dm.useDB();
+
+		// SQLを使う準備
+		String sql = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			// SQL文を指定して実行
+			sql = "SELECT * FROM test_ans WHERE id = ?";
+			ps = dm.cone.prepareStatement(sql);
+			ps.setInt(1, priNo);
+			rs = ps.executeQuery();
+
+			rs.next();
+
+			return rs.getString("enq_name");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println( "error・アンケートIDをとるところ" );
+			return null;
+		}
+		finally {
+			dm.closePreparedStatement(ps);
+			dm.closeResultSet(rs);
+			dm.closeConnection(dm.cone);
+		}
+	}
+
+	/**
+	解答済みアンケート質問リストを返す
+	*/
+	public List<String> resultView_getQuestion(String enqID) {
+		// DBを使えるようにしている
+		DAO_manager dm = new DAO_manager();
+		if(dm.cone == null) dm.useDB();
+
+		// SQLを使う準備
+		String sql = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			// SQL文を指定して実行
+			sql = "SELECT * FROM test_enq WHERE id = ?";
+			ps = dm.cone.prepareStatement(sql);
+			ps.setString(1, enqID);
+			rs = ps.executeQuery();
+
+			rs.next();
+
+			List<String> qList = new ArrayList<>();
+			for (int i = 1; i <= 5; i++) {
+				qList.add( rs.getString("q" + i) );
+			}
+			return qList;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println( "error・アンケート個別表示の質問5つをとるところ" );
+			return null;
+		}
+		finally {
+			dm.closePreparedStatement(ps);
+			dm.closeResultSet(rs);
+			dm.closeConnection(dm.cone);
+		}
 	}
 }

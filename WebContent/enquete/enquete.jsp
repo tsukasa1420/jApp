@@ -3,6 +3,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
+	// マイページ以外のリンクからこのページに来た場合はマイページに飛ぶ
+	if( request.getAttribute("answerEnquete") == null ){
+		RequestDispatcher rd = request.getRequestDispatcher("/enquete/myPage.jsp");
+		rd.forward(request, response);
+	}
+
+	// 質問番号、質問パラメータ番号を用意して、${}で使えるようにする。
 	int qNum = 0;
 	String qAnswer = "qAnswer";
 	request.setAttribute("value", qAnswer);

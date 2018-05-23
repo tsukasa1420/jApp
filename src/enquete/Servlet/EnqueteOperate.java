@@ -1,7 +1,6 @@
 package enquete.Servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,17 +14,17 @@ import enquete.Java.Enquete;
 @WebServlet("/EnqueteOperate")
 public class EnqueteOperate extends HttpServlet {
 	/**
+	アンケート類の処理
 		アンケートのリンク用意したり、
 		アンケートの回答を受け取ってDBへ格納するために動いている。
 	*/
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/html; charset=UTF-8");
+//		response.setContentType("text/html; charset=UTF-8");
 		request.setCharacterEncoding("UTF-8");
-		PrintWriter out = response.getWriter();
+//		PrintWriter out = response.getWriter();
 
 		// 何の操作を受け取ったかを判定
 		String ans = request.getParameter("ans");
-		System.out.println(ans);
 
 
 		Enquete enq = new Enquete();
@@ -34,7 +33,7 @@ public class EnqueteOperate extends HttpServlet {
 		if (ans == null) {
 			// アンケートに答えるページで質問を表示させている
 			enq.getQuestion(request, response);
-			System.out.println("CHECK NULL");
+			System.out.println("NULLPro");
 		}
 		else if(ans.equals("check") ) {
 			enq.checkProsess(request, response);
@@ -42,15 +41,12 @@ public class EnqueteOperate extends HttpServlet {
 		}
 		else if(ans.equals("send") ) {
 			enq.setEnquete(request, response);
-			System.out.println("送信");
+			System.out.println("送信済み");
 		}
 		else {
-			// アンケートに答えるページで質問を表示させている
-			enq.getQuestion(request, response);
+			// エラーメソッドを呼ぶ
 			System.out.println("ERROR");
 		}
-
-		out.println("アンケートページ正常終了");
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);

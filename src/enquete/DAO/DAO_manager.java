@@ -10,59 +10,62 @@ public class DAO_manager {
 	Connection cone;
 
 	/**
-		DB connection
+	DBに接続する
 	*/
 	public void useDB() {
 		try {
-			// connect JDBC
+			// JDBCに接続する
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
-			// login DB
+			// MySQLにログインする
 			String url = "jdbc:mysql://localhost/jApp?serverTimezone=UTC&useSSL=false";
 			String user = "student";
 			String pass = "himitu";
 			cone = DriverManager.getConnection(url, user, pass);
 		}
 		catch (ClassNotFoundException e) {
-			// Class.forName ERROR
-			System.out.println("Class.forName ERROR");
+			// Class.forName()のエラー
+			System.out.println("Class.forName()のエラー");
 		}
 		catch (SQLException e) {
-			// Connection ERROR
-			System.out.println("Connection ERROR");
+			// Connectionクラスのエラー
+			System.out.println("Connectionクラスのエラー");
+		}
+		finally {
+			closeConnection(cone);
 		}
 	}
 	/**
-		coneを閉じる
+	coneを閉じる
 	*/
 	public void closeConnection(Connection cone) {
-			try {
-				if(cone == null)cone.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-				System.out.println("コネクションクローズ時のエラー");
-			}
+		try {
+			if(cone == null)cone.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("コネクションクローズ時のエラー");
+		}
 	}
 	/**
-		psを閉じる
+	psを閉じる
 	*/
 	public void closePreparedStatement(PreparedStatement ps) {
-			try {
-				if(ps == null)ps.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-				System.out.println("プリペアードステートメントクローズ時のエラー");
-			}
+		try {
+			if(ps == null)ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("プリペアードステートメントクローズ時のエラー");
+		}
 	}
 	/**
-		rsを閉じる
+	rsを閉じる
 	*/
 	public void closeResultSet(ResultSet rs) {
-			try {
-				if(rs == null)rs.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-				System.out.println("プリペアードステートメントクローズ時のエラー");
-			}
+		try {
+			if(rs == null)rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("プリペアードステートメントクローズ時のエラー");
+		}
 	}
 }

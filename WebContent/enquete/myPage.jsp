@@ -1,15 +1,12 @@
-<%@ page import="java.util.List"%>
-<%@ page import="java.util.ArrayList"%>
-<%@page import="enquete.Java.Enquete"%>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+<%@page import="enquete.Java.Enquete" %>
+<%@page import="enquete.Java.BeanEnquete" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
-	// be usable session
-	HttpSession loginSession = request.getSession(false);
-
-	// judge LOGIN or LOGOUT ( areba )
-	if( loginSession.getAttribute("ログイン") == null ){
-		// jump jsp. and prepare.
+	// ログイン済みかを判定・未ログインであればログインページへ飛ぶ
+	if( session.getAttribute("ログイン") == null ){
 		RequestDispatcher rd = request.getRequestDispatcher("/enquete/login.jsp");
 		rd.forward(request, response);
 	}
@@ -29,14 +26,18 @@
 		<div id="container">
 			<div class="containtsBox">
 				MyPage
-					<p style="text-align: right;">
-						<%= session.getAttribute("userName") %> さんがログイン中<br>
-						<a href="/jApp/MyPage?log=out">ログアウト</a>
-					</p>
+				<div style="position: relative; height: 4em;">
+				<p style="position: absolute; right:0; width: 200px; text-align: left;">
+					<%= session.getAttribute("userName") %> さんがログイン中<br>
+					<a href="/jApp/ResultOperate">過去の解答を見る</a><br>
+					<a href="/jApp/enquete/userInfo.jsp">ユーザー情報ページ</a><br>
+					<a href="/jApp/MyPage?log=out">ログアウト</a>
+				</p>
+				</div>
 				<form action="/jApp/EnqueteOperate" method="post">
 					<ul>
 						<c:forEach items="${enquete_list}" var="enquete_name">
-							<li><a href="${ enquete_name.getUrl() }">${enquete_name.getEnqName()}</a>
+							<li><a href="${ enquete_name.getEnqURL() }">${ enquete_name.getEnqName() }</a>
 						</c:forEach>
 					</ul>
 				</form>

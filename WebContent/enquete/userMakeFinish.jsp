@@ -1,23 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
+	// アカウント作成完了の判定を受け取れなければログインページ（マイページに飛ぶ）
 	if( request.getAttribute("userMakeFinish") == null ){
-		// jump jsp. and prepare.
 		RequestDispatcher rd = request.getRequestDispatcher("/enquete/login.jsp");
 		rd.forward(request, response);
-	}
-
-	// be usable session
-	HttpSession loginSession = request.getSession(false);
-
-	// judge LOGIN or LOGOUT ( areba )
-	if( loginSession.getAttribute("ログイン") != null ){
 	}
 %>
 <!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Insert title here</title>
+		<title>アカウント作成完了</title>
 		<link rel="stylesheet" href="/jApp/enquete/style/whole.css">
 	</head>
 	<body>

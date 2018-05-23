@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import enquete.Java.Login;
+import enquete.Java.User;
 	/**
 		userMake.jsp
 		-> userOperate.servlet
@@ -23,9 +23,9 @@ public class UserOperate extends HttpServlet {
 		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = response.getWriter();
 
-		Login useL = new Login();
+		User user = new User();
 
-		useL.userMakeFunc(request, response);
+		user.userMakeFunc(request, response);
 		out.println("Finish<br>");
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

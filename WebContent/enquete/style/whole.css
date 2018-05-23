@@ -49,6 +49,7 @@ td{
 
 	background: #CFC;
 	border-radius: 10px;
+	border: 2px solid #CFC;
 
 	text-align: center;
 }
@@ -57,4 +58,8 @@ td{
 	max-width: 300px;
 	min-height: 50px;
 	max-height: 150px;
+}
+.linkBox:hover{
+	border: 2px solid #696;
+	color: #9C9;
 }

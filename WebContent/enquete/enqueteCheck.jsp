@@ -1,6 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<% int qNum = 0; %>
+<%
+	// アンケート回答ページ以外のリンクからこのページに来た場合はマイページに飛ぶ
+	if( request.getAttribute("checkEnquete") == null ){
+		RequestDispatcher rd = request.getRequestDispatcher("/enquete/myPage.jsp");
+		rd.forward(request, response);
+	}
+
+	int qNum = 0;
+%>
 <!DOCTYPE html>
 <html>
 	<head>
