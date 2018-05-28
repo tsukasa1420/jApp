@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
 	// アンケート回答ページ以外のリンクからこのページに来た場合はマイページに飛ぶ
-	if( request.getAttribute("finishEnquete") == null ){
+	if( request.getAttribute("finishEnqueteMake") == null ){
 		RequestDispatcher rd = request.getRequestDispatcher("/enquete/myPage.jsp");
 		rd.forward(request, response);
 	}
@@ -17,7 +17,7 @@
 		<div id="container">
 			<div class="containtsBox">
 				<div class="finishState">
-					アンケート結果を送信しました。<br>
+					アンケートを作成しました。<br>
 					お疲れ様でした。
 				</div>
 				<% request.setAttribute("imageLink", "finish.png"); %>

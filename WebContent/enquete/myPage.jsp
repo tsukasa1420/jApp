@@ -1,7 +1,4 @@
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.ArrayList" %>
 <%@page import="enquete.Java.Enquete" %>
-<%@page import="enquete.Java.BeanEnquete" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
@@ -19,21 +16,23 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>MyPage</title>
+		<title>マイページ</title>
 		<link rel="stylesheet" href="/jApp/enquete/style/whole.css">
 	</head>
 	<body>
 		<div id="container">
 			<div class="containtsBox">
-				MyPage
+				マイページ
 				<div style="position: relative; height: 4em;">
-				<p style="position: absolute; right:0; width: 200px; text-align: left;">
-					<%= session.getAttribute("userName") %> さんがログイン中<br>
-					<a href="/jApp/ResultOperate">過去の解答を見る</a><br>
-					<a href="/jApp/enquete/userInfo.jsp">ユーザー情報ページ</a><br>
-					<a href="/jApp/MyPage?log=out">ログアウト</a>
-				</p>
+					<p style="position: absolute; right: 0; width: 180px; text-align: left;">
+						<%= session.getAttribute("userName") %> さんがログイン中<br>
+						<a href="/jApp/ResultOperate">過去の解答を見る</a><br>
+						<a href="/jApp/enquete/enqueteMake.jsp">アンケート作成</a><br>
+						<a href="/jApp/enquete/userInfo.jsp">ユーザー情報ページ</a><br>
+						<a href="/jApp/MyPage?log=out">ログアウト</a>
+					</p>
 				</div>
+				回答できるアンケート一覧
 				<form action="/jApp/EnqueteOperate" method="post">
 					<ul>
 						<c:forEach items="${enquete_list}" var="enquete_name">
@@ -41,6 +40,8 @@
 						</c:forEach>
 					</ul>
 				</form>
+				<% request.setAttribute("imageLink", "ans.png"); %>
+				<jsp:include page="imageLink.jsp"></jsp:include>
 			</div>
 			<jsp:include page="footLink.html"></jsp:include>
 		</div>

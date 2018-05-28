@@ -1,7 +1,6 @@
 package enquete.Java;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -22,47 +21,31 @@ public class User {
 		INSERT命令を使う。
 	*/
 	public void userMakeFunc(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			/* ◆◆◆ */PrintWriter out = response.getWriter();
-			/* ◆◆◆ */out.println("check Login(servlet).userMakeFunc()01<br>");
+		UsefulFuncs uf = new UsefulFuncs();
 
-			String userName = null;
-			String password = null;
-			String mail = null;
-			int birth = 0;
+		try {
+			String userName = uf.noneID( request.getParameter("userName") );
+			String password = uf.noneID( request.getParameter("password") );
+			String mail = uf.noneID( request.getParameter("mail") );
+			int birth = uf.noneID( 0, request.getParameter("birth") );
 
 			// アカウント作成画面での入力が一つでも欠けていた場合の処理
-			if(		request.getParameter("userName").length() == 0 || request.getParameter("userName") == null ||
-					request.getParameter("password").length() == 0 || request.getParameter("password") == null ||
-					request.getParameter("mail").length() == 0 || request.getParameter("mail") == null ||
-					request.getParameter("birth").length() == 0 || request.getParameter("birth") == null
+			if(		userName == null		|| password == null ||
+					mail == null			|| birth == 0
 			/* if条件文ここまで */) {
-				/* ◆◆◆ */out.println("none data<br>");
-
 				// エラーメッセージをリクエストスコープに格納
-				request.setAttribute("message", "<br><span style=\"color: red;\">未入力項目があります。</span>");
+				uf.req_EM(request, "未入力項目があります。");
 
 				// 指定のリンクに飛ぶ
 				RequestDispatcher rd = request.getRequestDispatcher("/enquete/userMake.jsp");
 				rd.forward(request, response);
 			}
-			else {
-				userName	= request.getParameter("userName");
-				password	= request.getParameter("password");
-				mail			= request.getParameter("mail");
-				birth		= Integer.parseInt( request.getParameter("birth") );
-			}
-
-			/* ◆◆◆ */out.println(userName+ "<br>");
-			/* ◆◆◆ */out.println(password+ "<br>");
-			/* ◆◆◆ */out.println(mail+ "<br>");
-			/* ◆◆◆ */out.println(birth+ "<br>");
 
 			// SQLでINSERT命令を実行・ユーザー名被りははじく
 			DAO_user useDAO = new DAO_user();
 			if( !useDAO.userMake(userName, password, mail, birth) ) {
 				// エラーメッセージをリクエストスコープに格納
-				request.setAttribute("message", "<br><span style=\"color: red;\">このユーザーIDは既に使われています</span>");
+				uf.req_EM(request, "このユーザーIDは既に使われています。");
 
 				// 指定のリンクに飛ぶ
 				RequestDispatcher rd = request.getRequestDispatcher("/enquete/userMake.jsp");
@@ -70,18 +53,12 @@ public class User {
 				return;
 			}
 
-			/* ◆◆◆ */out.println("チェック<br>");
-
-			// パスワードを隠して表示するための処理
-			UsefulFuncs uf = new UsefulFuncs();
-			String hiddenPass = uf.hiddenPass(password);
-
 			// アカウント作成完了画面に入るための準備
 			request.setAttribute("userMakeFinish", "Finish");
 
 			// アカウント作成完了画面で表示する項目の準備
 			request.setAttribute("userName", userName);
-			request.setAttribute("password", hiddenPass);
+			request.setAttribute("password", uf.hiddenPass(password));
 			request.setAttribute("mail", mail);
 			request.setAttribute("birth", birth);
 
@@ -94,11 +71,10 @@ public class User {
 			log.inFunc(request, userName);
 		}
 		catch (ServletException e) {
-			System.out.println("forward()のエラー（サーブレット面・userMakeFunc）");
+			uf.fw_EM( "サーブレット面・userMakeFunc");
 		}
 		catch (IOException e) {
-			System.out.println("PrintWriterクラスのエラー");
-			System.out.println("forward()のエラー（入出力面・userMakeFunc）");
+			uf.fw_EM( "入出力面・userMakeFunc");
 		}
 	}
 
@@ -126,6 +102,7 @@ public class User {
 		デリートなのか、それぞれのユーザー情報のアップデート処理なのかを記憶して本人確認ページに飛ぶ
 	*/
 	public void userGetOrder(HttpServletRequest request, HttpServletResponse response, String edit) {
+		UsefulFuncs uf = new UsefulFuncs();
 		try {
 			HttpSession session = request.getSession(false);
 			session.setAttribute("edit", edit);
@@ -137,7 +114,7 @@ public class User {
 			rd.forward(request, response);
 		} catch (ServletException | IOException e) {
 			e.printStackTrace();
-			System.out.println("エラーuserEditFunc");
+			uf.fw_EM( "userEditFunc");
 		}
 	}
 
@@ -145,6 +122,7 @@ public class User {
 	ユーザーの本人確認
 	*/
 	public void userSelfCheck(HttpServletRequest request, HttpServletResponse response) {
+		UsefulFuncs uf = new UsefulFuncs();
 		HttpSession session = request.getSession(false);
 		String userID = (String) session.getAttribute("userName");
 		String userID_in = request.getParameter("userID");
@@ -165,7 +143,7 @@ public class User {
 			// ユーザーIDだけ合ってる（パスワードが間違ってる）
 			else if( userID.equals(userID_in) && !daoU.login(userID, password_in) ) {
 				// エラーメッセージをリクエストスコープに格納
-				request.setAttribute("message", "<br><span style=\"color: red;\">パスワードが間違っています。</span>");
+				uf.req_EM(request, "パスワードが間違っています。");
 
 				// 指定のリンクに飛ぶ
 				RequestDispatcher rd = request.getRequestDispatcher("/enquete/userInfo.jsp");
@@ -175,7 +153,7 @@ public class User {
 			// ユーザーIDが間違ってる（パスワードは合ってる）
 			else if( !userID.equals(userID_in) && daoU.login(userID, password_in) ){
 				// エラーメッセージをリクエストスコープに格納
-				request.setAttribute("message", "<br><span style=\"color: red;\">ユーザーIDが間違っています。</span>");
+				uf.req_EM(request, "ユーザーIDが間違っています。");
 
 				// 指定のリンクに飛ぶ
 				RequestDispatcher rd = request.getRequestDispatcher("/enquete/userInfo.jsp");
@@ -183,7 +161,7 @@ public class User {
 			}
 			else {
 				// エラーメッセージをリクエストスコープに格納
-				request.setAttribute("message", "<br><span style=\"color: red;\">ユーザー名かパスワードが間違っています。</span>");
+				uf.req_EM(request, "ユーザー名かパスワードが間違っています。");
 
 				// 指定のリンクに飛ぶ
 				RequestDispatcher rd = request.getRequestDispatcher("/enquete/userInfo.jsp");
@@ -191,11 +169,11 @@ public class User {
 			}
 		}
 		catch (ServletException e) {
-			System.out.println("forwardエラー・S・userSelfCheck");
+			uf.fw_EM( "S・userSelfCheck");
 			e.printStackTrace();
 		}
 		catch (IOException e) {
-			System.out.println("forwardエラー・IO・userSelfCheck");
+			uf.fw_EM( "IO・userSelfCheck");
 			e.printStackTrace();
 		}
 	}
@@ -205,6 +183,7 @@ public class User {
 		UPDATE命令を使う。
 	*/
 	public void userUpdateFunc(HttpServletRequest request, HttpServletResponse response) {
+		UsefulFuncs uf = new UsefulFuncs();
 		HttpSession session = request.getSession();
 		DAO_user daoU = new DAO_user();
 
@@ -212,7 +191,6 @@ public class User {
 		String id = (String) session.getAttribute("userName");
 		String edit = (String) session.getAttribute("edit");
 		String newData = request.getParameter("newData");
-
 
 		try {
 			// DB格納が成功したら、userInfoに飛ばす。
@@ -222,19 +200,18 @@ public class User {
 				rd.forward(request, response);
 			}
 			else {
-				/* ◆◆◆ */System.out.println( "User.userUpdateFunc()でDBのエラー" );
 				// エラーメッセージをリクエストスコープに格納
-				request.setAttribute("message", "<br><span style=\"color: red;\">新しく入力されたデータに誤りがありました。<br>もう一度やり直してください。</span>");
+				uf.req_EM(request, "新しく入力されたデータに誤りがありました。<br>もう一度やり直してください。");
 
 				// 指定のリンクに飛ぶ
 				RequestDispatcher rd = request.getRequestDispatcher("/enquete/userInfo.jsp");
 				rd.forward(request, response);
 			}
 		} catch (ServletException e) {
-			/* ◆◆◆ */System.out.println( "User.userUpdateFunc()でフォワードのエラーS" );
+			uf.fw_EM( "User.userUpdateFunc()・S" );
 			e.printStackTrace();
 		} catch (IOException e) {
-			/* ◆◆◆ */System.out.println( "User.userUpdateFunc()でフォワードのエラーIO" );
+			uf.fw_EM( "User.userUpdateFunc()・IO" );
 			e.printStackTrace();
 		}
 	}
@@ -244,6 +221,7 @@ public class User {
 		DELETE命令を使う。
 	*/
 	public void userDeleteFunc(HttpServletRequest request, HttpServletResponse response) {
+		UsefulFuncs uf = new UsefulFuncs();
 		HttpSession session = request.getSession();
 		DAO_user daoU = new DAO_user();
 
@@ -260,17 +238,17 @@ public class User {
 			else {
 				/* ◆◆◆ */System.out.println( "User.userDeleteFunc()でDBのエラー" );
 				// エラーメッセージをリクエストスコープに格納
-				request.setAttribute("message", "<br><span style=\"color: red;\">何らかのエラーが発生しました。</span>");
+				uf.req_EM(request, "何らかのエラーが発生しました。");
 
 				// 指定のリンクに飛ぶ
 				RequestDispatcher rd = request.getRequestDispatcher("/enquete/userInfo.jsp");
 				rd.forward(request, response);
 			}
 		} catch (ServletException e) {
-			/* ◆◆◆ */System.out.println( "User.userUpdateFunc()でフォワードのエラーS" );
+			uf.fw_EM( "User.userUpdateFunc()・S" );
 			e.printStackTrace();
 		} catch (IOException e) {
-			/* ◆◆◆ */System.out.println( "User.userUpdateFunc()でフォワードのエラーIO" );
+			uf.fw_EM( "User.userUpdateFunc()・IO" );
 			e.printStackTrace();
 		}
 	}

@@ -19,7 +19,7 @@
 	<body>
 		<div id="container">
 			<div class="containtsBox">
-				Question  check
+				回答確認
 				<table>
 					<tr>
 						<th colspan="2">質問</th><th style="min-width: 150px;">回答</th>
@@ -39,8 +39,8 @@
 				</table>
 				<form action="/jApp/EnqueteOperate" method="post">
 					<p>
-						<input type="hidden" name="ans" value="send">
-						<input type="submit" value="送信">
+						<input type="hidden" name="enq" value="send">
+						<input type="submit" value="アンケート結果送信" class="submit">
 					</p>
 				</form>
 			</div>

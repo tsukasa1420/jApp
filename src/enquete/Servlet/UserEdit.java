@@ -16,8 +16,10 @@ import enquete.Java.User;
 @WebServlet("/UserEdit")
 public class UserEdit extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
 		User user = new User();
 
+		// パラメータで操作の指定
 		String edit = request.getParameter("Edit");
 
 		// 本人確認の処理を受け取る

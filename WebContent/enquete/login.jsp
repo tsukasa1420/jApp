@@ -6,6 +6,9 @@
 		RequestDispatcher rd = request.getRequestDispatcher("/enquete/myPage.jsp");
 		rd.forward(request, response);
 	}
+
+	request.setAttribute("setLink", "/jApp/enquete/userMake.jsp");
+	request.setAttribute("setLinkState", "アカウント作成");
 %>
 <!DOCTYPE html>
 <html>
@@ -17,35 +20,32 @@
 	<body>
 		<div id="container">
 			<div class="containtsBox">
-				login
+				トップページ
 				<!-- ログインしてない時のエラーメッセージ -->
 				<c:if test="${ ログイン eq null }" >${ message }</c:if>
 				<form action="/jApp/MyPage" method="post">
-					<table style="margin:  0 auto;">
+					<table>
 						<tr>
-							<td>user</td>
+							<th colspan="2">ログイン情報入力</th>
+						</tr>
+						<tr>
+							<td>ユーザーID</td>
 							<td><input type="text" name="userName"></td>
 						</tr>
 						<tr>
-							<td>pass</td>
+							<td>パスワード</td>
 							<td><input type="password" name="password"></td>
 						</tr>
 					</table>
 					<p>
 						<input type="hidden" name="log" value="in">
-						<input type="submit" value="ログイン">
+						<input type="submit" value="ログイン" class="submit">
 					</p>
 				</form>
+				<% request.setAttribute("imageLink", "login.png"); %>
+				<jsp:include page="imageLink.jsp"></jsp:include>
 			</div>
-			<div class="containtsBox">
-				accountMake
-				<a href="/jApp/enquete/userMake.jsp">
-					<div class="linkBox">
-						アカウント作成
-					</div>
-				</a>
-			</div>
-			<jsp:include page="footLink.html"></jsp:include>
+			<jsp:include page="footerLink.jsp"></jsp:include>
 		</div>
 	</body>
 </html>

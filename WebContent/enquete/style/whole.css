@@ -1,9 +1,14 @@
+*{
+	font-family: Meiryo;
+	font-size: 12pt;
+	box-sizing: border-box;
+}
 a{
 	text-decoration: none;
 	color: #363;
 }
-a:hover{
-	color: #9C9;
+img{
+	vertical-align: bottom;
 }
 p{
 	margin: 0;
@@ -13,6 +18,10 @@ p{
 }
 ul{
 	margin: 0;
+	max-width: 270px;
+}
+li{
+	margin: 10px 0;
 }
 table{
 	margin: 0 auto;
@@ -23,14 +32,38 @@ table{
 table, th, td{
 	border-top: 2px solid #CCC;
 	border-bottom: 2px solid #CCC;
-	/* border: none; */
+	font-size: 10pt;
 }
 th{
 	background: #CFC;
 	color: #363;
 }
 td{
-	padding: 5px 15px;
+	padding: 10px 15px;
+}
+input, textarea{
+	width: 180px;
+	padding: 5px;
+	border: 2px solid #CCC;
+	border-radius: 5px;
+
+	font-family: Meiryo;
+	font-size: 10pt;
+}
+textarea{
+	width: 180px;
+	min-width: 180px;
+	max-width: 180px;
+	min-height: 50px;
+	max-height: 300px;
+}
+.submit{
+	border: none;
+	background: #EEE;
+	color: #333;
+}
+.attention{
+	background: #FCC;
 }
 #container{
 	margin: 0 auto;
@@ -40,26 +73,56 @@ td{
 	padding: 5px;
 	margin-bottom: 15px;
 
+	position: relative;
+
 	border: 1px solid #CCC;
 }
+.finishState{
+	margin: 30px;
+	font-size: 16pt;
+}
+.baseLink{
+	padding: 0 154px;
+}
 .linkBox{
-	margin: 0 auto;
 	padding: 5px;
-	width: 50%;
 
 	background: #CFC;
-	border-radius: 10px;
-	border: 2px solid #CFC;
+	border-radius: 5px;
 
 	text-align: center;
 }
-.answerBox{
-	min-width: 200px;
-	max-width: 300px;
-	min-height: 50px;
-	max-height: 150px;
-}
 .linkBox:hover{
-	border: 2px solid #696;
-	color: #9C9;
+	background: #9F9;
+	color: #030;
+}
+.submit:hover{
+	background: #CCC;
+	cursor: pointer;
+}
+.attention:hover{
+	background: #F99;
+	color: #633;
+	cursor: pointer;
+}
+.userUpdateButton{
+	width: 60px;
+}
+.caution{
+	color: #666;
+	margin: 0;
+	text-align: left;
+}
+.caution table{
+	border-collapse: collapse;
+	max-width: 95%;
+	min-width: 300px;
+}
+.caution table, .caution td{
+	border: none;
+	font-size: 8pt;
+}
+.caution td{
+	padding: 0;
+	padding: 10px 0;
 }

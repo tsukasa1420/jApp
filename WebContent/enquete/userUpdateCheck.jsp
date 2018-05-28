@@ -28,7 +28,10 @@
 			<div class="containtsBox">
 				本人確認
 				<form action="/jApp/UserEdit" method="post">
-					<table style="margin: 0 auto;">
+					<table>
+						<tr>
+							<th colspan="2">本人情報入力</th>
+						</tr>
 						<tr>
 							<td>USER ID</td>
 							<td><input type="text" name="userID"></td>
@@ -40,9 +43,12 @@
 					</table>
 					<p>
 						<input type="hidden" name="Edit" value="checkUser">
-						<input type="submit" value="CHECK">
+						<input type="submit" value="確認" class="submit">
 					</p>
 				</form>
+				<p style="text-align: right;">
+					<a href="/jApp/enquete/userInfo.jsp">ユーザー情報に戻る</a>
+				</p>
 			</div>
 			<jsp:include page="footLink.html"></jsp:include>
 		</div>

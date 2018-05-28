@@ -18,6 +18,8 @@ public class LogProcess {
 	ログイン処理
 	*/
 	public void inFunc(HttpServletRequest request, HttpServletResponse response) {
+		UsefulFuncs uf = new UsefulFuncs();
+
 		try {
 			// 入力された値を受け取る
 			String userName = request.getParameter("userName");
@@ -26,11 +28,6 @@ public class LogProcess {
 			// DBで入力値と一致するユーザー情報を探す
 			DAO_user daoUser = new DAO_user();
 			boolean judgeLogin = daoUser.login(userName, password);
-
-
-//			/* ◆◆◆ */System.out.println("入名\t\t：" + userName + "<loginFunc>");
-//			/* ◆◆◆ */System.out.println("入パス\t：" + password + "<loginFunc>");
-
 
 			// ログイン判定
 			if(judgeLogin == true) {
@@ -47,7 +44,7 @@ public class LogProcess {
 			}
 			else {
 				// エラーメッセージをリクエストスコープに格納
-				request.setAttribute("message", "<br><span style=\"color: red;\">ユーザー名かパスワードが間違っています。</span>");
+				uf.req_EM(request, "ユーザー名かパスワードが間違っています。");
 
 				// 指定のリンクに飛ぶ
 				RequestDispatcher rd = request.getRequestDispatcher("/enquete/login.jsp");
@@ -55,13 +52,13 @@ public class LogProcess {
 			}
 		}
 		catch (ServletException e) {
-			System.out.println("forward()のエラー（サーブレット面・loginFunc）");
+			uf.fw_EM("サーブレット面・inFunc");
 		}
 		catch (IOException e) {
-			System.out.println("forward()のエラー（サーブレット面・loginFunc）");
+			uf.fw_EM("IO面・inFunc");
 		}
 		catch (Exception e) {
-			System.out.println("何かしらにエラー（loginFunc）");
+			System.out.println("何かしらにエラー（inFunc）");
 		}
 	}
 
@@ -81,16 +78,16 @@ public class LogProcess {
 	ログアウト処理
 	*/
 	public void outFunc(HttpServletRequest request, HttpServletResponse response) {
+		UsefulFuncs uf = new UsefulFuncs();
+
 		try {
 			HttpSession session = request.getSession(false);
-
-			/* ◆◆◆ */System.out.println("ログアウト処理 " + session+ "<br>");
 
 			if( session != null ) {
 				session.invalidate();
 
 				// ログアウトメッセージをリクエストスコープに格納
-				request.setAttribute("message", "<br><span style=\"color: blue;\">ログアウトしました。</span>");
+				uf.req_FM(request, "ログアウトしました。");
 
 				// 指定のリンクに飛ぶ
 				RequestDispatcher rd = request.getRequestDispatcher("/enquete/login.jsp");
@@ -98,16 +95,18 @@ public class LogProcess {
 			}
 		}
 		catch (ServletException e) {
-			System.out.println("forward()のエラー（サーブレット面・logoutFunc）");
+			uf.fw_EM("サーブレット面・outFunc");
 		}
 		catch (IOException e) {
-			System.out.println("forward()のエラー（入出力面・logoutFunc）");
+			uf.fw_EM("入出力面・outFunc");
 		}
 	}
 	/**
 	ログアウト処理（アカウント削除時）
 	*/
 	public void outFunc(HttpServletRequest request, HttpServletResponse response, String message) {
+		UsefulFuncs uf = new UsefulFuncs();
+
 		try {
 			HttpSession session = request.getSession(false);
 			if( session != null ) {
@@ -122,10 +121,10 @@ public class LogProcess {
 			}
 		}
 		catch (ServletException e) {
-			System.out.println("forward()のエラー（サーブレット面・logoutFunc）");
+			uf.fw_EM("サーブレット面・outFunc");
 		}
 		catch (IOException e) {
-			System.out.println("forward()のエラー（入出力面・logoutFunc）");
+			uf.fw_EM("入出力面・outFunc");
 		}
 	}
 }

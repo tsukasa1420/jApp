@@ -8,7 +8,7 @@ import java.util.List;
 
 import enquete.Java.BeanEnquete;
 
-public class DAO_enquete {
+public class DAO_enquete extends DAO_manager{
 	/**
 	レコードの数（行数）とアンケート名を取得する
 		リストのサイズ＝レコード数
@@ -17,8 +17,7 @@ public class DAO_enquete {
 	*/
 	public List<BeanEnquete> getEnqName(){
 		// DBを使えるようにしている
-		DAO_manager dm = new DAO_manager();
-		if(dm.cone == null) dm.useDB();
+		if(cone == null) useDB();
 
 		// SQLを使う準備
 		String sql = null;
@@ -27,26 +26,23 @@ public class DAO_enquete {
 
 		try {
 			// SQL文を指定して実行
-			sql = "SELECT * FROM test_enq";
-			ps = dm.cone.prepareStatement(sql);
+			sql = "SELECT * FROM enq_table";
+			ps = cone.prepareStatement(sql);
 			rs = ps.executeQuery();
 
 			List<BeanEnquete> list = new ArrayList<>();
 
-			String url = "/jApp/EnqueteOperate?jump=";
+			String url = "/jApp/EnqueteOperate?enq=";
 			while( rs.next() ) {
-				list.add( new BeanEnquete( rs.getString("id"), rs.getString("nameenq"), url + rs.getString("id") ) );
+				list.add( new BeanEnquete( rs.getString("id"), rs.getString("enq_name"), url + rs.getString("id") ) );
 			}
 			return list;
 		}
 		catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println( "sql error" );
+			errMesSQL(e, "マイページにアンケート名を表示する時のエラー");
 		}
 		finally {
-			dm.closePreparedStatement(ps);
-			dm.closeResultSet(rs);
-			dm.closeConnection(dm.cone);
+			jAppClose(ps, rs, cone);
 		}
 		return null;
 	}
@@ -65,8 +61,7 @@ public class DAO_enquete {
 	*/
 	public List<String> getQuestion(String pri) {
 		// DBを使えるようにしている
-		DAO_manager dm = new DAO_manager();
-		if(dm.cone == null) dm.useDB();
+		if(cone == null) useDB();
 
 		// SQLを使う準備
 		String sql = null;
@@ -75,8 +70,8 @@ public class DAO_enquete {
 
 		try {
 			// SQL文を指定して実行
-			sql = "SELECT * FROM test_enq WHERE id=?";
-			ps = dm.cone.prepareStatement(sql);
+			sql = "SELECT * FROM enq_table WHERE id=?";
+			ps = cone.prepareStatement(sql);
 			ps.setString(1, pri);
 			rs = ps.executeQuery();
 
@@ -92,13 +87,10 @@ public class DAO_enquete {
 			return setQuestion;
 		}
 		catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println( "SQL getQuestion()メソッドでエラー" );
+			errMesSQL(e, "アンケート回答時のエラー");
 		}
 		finally {
-			dm.closePreparedStatement(ps);
-			dm.closeResultSet(rs);
-			dm.closeConnection(dm.cone);
+			jAppClose(ps, rs, cone);
 		}
 		return null;
 	}
@@ -108,8 +100,7 @@ public class DAO_enquete {
 	*/
 	public void addAnswer( String userName, String enqPri, List<String> ansList ) {
 		// DBを使えるようにしている
-		DAO_manager dm = new DAO_manager();
-		if(dm.cone == null) dm.useDB();
+		if(cone == null) useDB();
 
 		// SQLを使う準備
 		String sql = null;
@@ -117,8 +108,9 @@ public class DAO_enquete {
 
 		try {
 			// SQL文を指定して実行
-			sql = "INSERT INTO test_ans( user_name, enq_name, a1, a2, a3, a4, a5 ) VALUES( ?, ?, ?, ?, ?, ?, ? )";
-			ps = dm.cone.prepareStatement(sql);
+//			sql = "INSERT INTO test_ans( user_name, enq_name, a1, a2, a3, a4, a5 ) VALUES( ?, ?, ?, ?, ?, ?, ? )";
+			sql = "INSERT INTO ans_table( user_id, enq_id, a1, a2, a3, a4, a5 ) VALUES( ?, ?, ?, ?, ?, ?, ? )";
+			ps = cone.prepareStatement(sql);
 			ps.setString( 1, userName );
 			ps.setString( 2, enqPri );
 			for ( int i = 3; i < ( ansList.size() + 3 ); i++ ) {
@@ -126,12 +118,10 @@ public class DAO_enquete {
 			}
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println( "sql error・addAnswer" );
+			errMesSQL(e, "DBに回答を記録する時のエラー");
 		}
 		finally {
-			dm.closePreparedStatement(ps);
-			dm.closeConnection(dm.cone);
+			jAppClose(ps, cone);
 		}
 	}
 
@@ -140,8 +130,7 @@ public class DAO_enquete {
 	*/
 	public List<BeanEnquete> resultViewAll(String userID) {
 		// DBを使えるようにしている
-		DAO_manager dm = new DAO_manager();
-		if(dm.cone == null) dm.useDB();
+		if(cone == null) useDB();
 
 		// SQLを使う準備
 		String sql = null;
@@ -150,37 +139,35 @@ public class DAO_enquete {
 
 		try {
 			// SQL文を指定して実行
-			sql = "SELECT * FROM test_ans WHERE user_name = ?";
-			ps = dm.cone.prepareStatement(sql);
+//			sql = "SELECT * FROM test_ans WHERE user_name = ?";
+			sql = "SELECT * FROM ans_table WHERE user_id = ?";
+			ps = cone.prepareStatement(sql);
 			ps.setString(1, userID);
 			rs = ps.executeQuery();
 
 			List<BeanEnquete> beList = new ArrayList<>();
 			while ( rs.next() ) {
 				int priNo = rs.getInt("id");
-				String enqID = rs.getString("enq_name");
-				beList.add( new BeanEnquete(priNo, enqID) );
+				String enqID = rs.getString("enq_id");
+				String enqName = resultViewAll_getEnqName(enqID);
+				beList.add( new BeanEnquete(priNo, enqName) );
 			}
 			return beList;
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println( "sql error・addAnswer" );
+			errMesSQL(e, "解答済みアンケートを全表示時のエラー");
 			return null;
 		}
 		finally {
-			dm.closePreparedStatement(ps);
-			dm.closeResultSet(rs);
-			dm.closeConnection(dm.cone);
+			jAppClose(ps, rs, cone);
 		}
 	}
 
 	/**
-	解答済みアンケート、回答結果リストを返す
+	アンケートのID（xxxx）受け取って、対応するアンケートの名前を返す
 	*/
-	public List<String> resultView_getAnswer(int priNo) {
+	public String resultViewAll_getEnqName(String enqID) {
 		// DBを使えるようにしている
-		DAO_manager dm = new DAO_manager();
-		if(dm.cone == null) dm.useDB();
+		if(cone == null) useDB();
 
 		// SQLを使う準備
 		String sql = null;
@@ -189,101 +176,52 @@ public class DAO_enquete {
 
 		try {
 			// SQL文を指定して実行
-			sql = "SELECT * FROM test_ans WHERE id = ?";
-			ps = dm.cone.prepareStatement(sql);
-			ps.setInt(1, priNo);
-			rs = ps.executeQuery();
-
-			rs.next();
-
-			List<String> aList = new ArrayList<>();
-			for (int i = 1; i <= 5; i++) {
-				aList.add( rs.getString("a" + i) );
-			}
-			return aList;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println( "error・アンケート個別表示の回答5つをとるところ" );
-			return null;
-		}
-		finally {
-			dm.closePreparedStatement(ps);
-			dm.closeResultSet(rs);
-			dm.closeConnection(dm.cone);
-		}
-	}
-
-	/**
-	解答済みアンケート、なんのアンケート(enqID)かを返す
-	*/
-	public String resultView_getEnqID(int priNo) {
-		// DBを使えるようにしている
-		DAO_manager dm = new DAO_manager();
-		if(dm.cone == null) dm.useDB();
-
-		// SQLを使う準備
-		String sql = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			// SQL文を指定して実行
-			sql = "SELECT * FROM test_ans WHERE id = ?";
-			ps = dm.cone.prepareStatement(sql);
-			ps.setInt(1, priNo);
+			sql = "SELECT * FROM enq_table WHERE id = ?";
+			ps = cone.prepareStatement(sql);
+			ps.setString(1, enqID);
 			rs = ps.executeQuery();
 
 			rs.next();
 
 			return rs.getString("enq_name");
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println( "error・アンケートIDをとるところ" );
+			errMesSQL(e, "解答済みアンケート質問リストを返す時のエラー");
 			return null;
 		}
 		finally {
-			dm.closePreparedStatement(ps);
-			dm.closeResultSet(rs);
-			dm.closeConnection(dm.cone);
+			jAppClose(ps, rs, cone);
 		}
 	}
 
 	/**
-	解答済みアンケート質問リストを返す
+	DBに回答を記録する
 	*/
-	public List<String> resultView_getQuestion(String enqID) {
+	public boolean enqueteMake_DB( String enqID, String enqName, List<String> qList ) {
 		// DBを使えるようにしている
-		DAO_manager dm = new DAO_manager();
-		if(dm.cone == null) dm.useDB();
+		if(cone == null) useDB();
 
 		// SQLを使う準備
 		String sql = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;
 
 		try {
 			// SQL文を指定して実行
-			sql = "SELECT * FROM test_enq WHERE id = ?";
-			ps = dm.cone.prepareStatement(sql);
-			ps.setString(1, enqID);
-			rs = ps.executeQuery();
-
-			rs.next();
-
-			List<String> qList = new ArrayList<>();
-			for (int i = 1; i <= 5; i++) {
-				qList.add( rs.getString("q" + i) );
+			sql = "INSERT INTO enq_table( id, enq_name, q1, q2, q3, q4, q5 ) VALUES( ?, ?, ?, ?, ?, ?, ? )";
+			ps = cone.prepareStatement(sql);
+			ps.setString( 1, enqID );
+			ps.setString( 2, enqName );
+			for ( int i = 3; i < ( qList.size() + 3 ); i++ ) {
+				ps.setString( i, qList.get(i - 3) );
 			}
-			return qList;
+			ps.executeUpdate();
+
+			return true;
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println( "error・アンケート個別表示の質問5つをとるところ" );
-			return null;
+			errMesSQL(e, "DBに回答を記録する時のエラー");
+			return false;
 		}
 		finally {
-			dm.closePreparedStatement(ps);
-			dm.closeResultSet(rs);
-			dm.closeConnection(dm.cone);
+			jAppClose(ps, cone);
 		}
 	}
 }

@@ -42,11 +42,9 @@ public class Enquete {
 	マイページ内のアンケートリンクを踏んだら実行される処理。
 		アンケートの質問をDBからとってくる。
 	*/
-	public void getQuestion(HttpServletRequest request, HttpServletResponse response){
+	public void getQuestion(HttpServletRequest request, HttpServletResponse response, String pri){
+		UsefulFuncs uf = new UsefulFuncs();
 		try {
-			String pri = request.getParameter("jump");
-
-
 			// DBから質問一覧を取得
 			DAO_enquete daoE = new DAO_enquete();
 			List<String> qList =  daoE.getQuestion(pri);
@@ -63,7 +61,7 @@ public class Enquete {
 			RequestDispatcher rd = request.getRequestDispatcher("/enquete/enquete.jsp");
 			rd.forward(request, response);
 		} catch (ServletException | IOException e) {
-			System.out.println("forward()のエラー（getQuestion）");
+			uf.fw_EM( "getQuestion");
 		}
 	}
 
@@ -75,14 +73,8 @@ public class Enquete {
 		HttpSession session = request.getSession(false);
 		int qNum = (int)session.getAttribute("qNum");
 
-
-		/* ◆◆◆ */System.out.println("qNum : " + qNum);
-
-
-//		List<String> answers = new ArrayList<>();
 		for (int i = 1; i <= qNum; i++) {
 			session.setAttribute( "qAnswer" + i, request.getParameter("qAnswer" + i) );
-			/* ◆◆◆ */System.out.println( "# " + request.getParameter("qAnswer" + i) );
 		}
 
 		// 指定のページに飛ぶ
@@ -95,28 +87,24 @@ public class Enquete {
 	アンケートの回答確認ページで送信ボタンを押した場合の処理
 	*/
 	public void setEnquete(HttpServletRequest request, HttpServletResponse response){
+		UsefulFuncs uf = new UsefulFuncs();
+		HttpSession session = request.getSession(false);
+		DAO_enquete daoE = new DAO_enquete();
+
 		try {
 			// セッションを利用して、質問数（qNum）・回答（ansList）を取得している。
-			HttpSession session = request.getSession(false);
 			int qNum = (int)session.getAttribute("qNum");
 
 			List<String> ansList = new ArrayList<>();
 			for (int i = 1; i <= qNum; i++) {
 				ansList.add( (String)session.getAttribute("qAnswer" + i) );
 			}
-			/* ◆◆◆ */for (String string : ansList) {
-			/* ◆◆◆ */	System.out.println("setEnquete % : " + string);
-			/* ◆◆◆ */}
 
 			// DBに格納する際の情報の取得
 			String pri = (String) session.getAttribute("pri");
 			String userName = (String) session.getAttribute("userName");
 
-			/* ◆◆◆ */System.out.println( "主鍵" + pri );
-			/* ◆◆◆ */System.out.println( "名前" + userName );
-
 			// DBに格納
-			DAO_enquete daoE = new DAO_enquete();
 			daoE.addAnswer( userName, pri, ansList );
 
 			// 指定のページに飛ぶ
@@ -126,10 +114,47 @@ public class Enquete {
 		}
 		catch (ServletException e) {
 			System.out.println( "" );
-			System.out.println( "フォワードエラー・setEnquete" );
+			uf.fw_EM( "setEnquete" );
 		}
 		catch (IOException e) {
-			System.out.println( "フォワードエラー・setEnquete" );
+			uf.fw_EM( "setEnquete" );
+		}
+	}
+
+	/**
+	アンケートの回答確認ページで送信ボタンを押した場合の処理
+	*/
+	public void enqueteMake(HttpServletRequest request, HttpServletResponse response){
+		DAO_enquete daoE = new DAO_enquete();
+		UsefulFuncs uf = new UsefulFuncs();
+
+		String enqID = uf.noneID( request.getParameter("enqID") );
+		String enqName = uf.noneID( request.getParameter("enqName") );
+		List<String> qList = new ArrayList<>();
+		for (int i = 1; i <= 5; i++) {
+			qList.add( uf.noneID(request.getParameter( "q" + i )) );
+		}
+
+		try {
+			// 正常終了
+			if( daoE.enqueteMake_DB(enqID, enqName, qList) ) {
+				request.setAttribute("finishEnqueteMake", "move");
+				RequestDispatcher rd = request.getRequestDispatcher("/enquete/enqueteMakeFinish.jsp");
+				rd.forward(request, response);
+			}
+			// 入力値が無い、DBエラーなど
+			else{
+				uf.req_EM(request, "入力エラーが起きました。<br>もう一度入力してください。");
+				RequestDispatcher rd = request.getRequestDispatcher("/enquete/enqueteMake.jsp");
+				rd.forward(request, response);
+			}
+
+		} catch (ServletException e) {
+			uf.fw_EM("アンケートクラス、アンケート作成関数");
+			e.printStackTrace();
+		} catch (IOException e) {
+			uf.fw_EM("アンケートクラス、アンケート作成関数");
+			e.printStackTrace();
 		}
 	}
 }

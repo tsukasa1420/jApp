@@ -1,5 +1,3 @@
-<%@ page import="java.util.ArrayList"%>
-<%@ page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
@@ -24,7 +22,7 @@
 	<body>
 		<div id="container">
 			<div class="containtsBox">
-				Question
+				アンケート
 				<form action="/jApp/EnqueteOperate" method="post">
 					<table>
 						<tr>
@@ -38,7 +36,7 @@
 								%>
 								<td>Q<%=qNum %></td>
 								<td>${ q }</td>
-								<td><textarea rows="2" cols="2" class="answerBox" name="${ value }"></textarea></td>
+								<td><textarea rows="2" cols="2" name="${ value }"></textarea></td>
 							</tr>
 						</c:forEach>
 						<%
@@ -46,8 +44,8 @@
 						%>
 					</table>
 					<p>
-						<input type="hidden" name="ans" value="check">
-						<input type="submit" value="CHECK">
+						<input type="hidden" name="enq" value="check">
+						<input type="submit" value="回答確認" class="submit">
 					</p>
 				</form>
 			</div>

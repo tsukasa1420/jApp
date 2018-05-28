@@ -16,28 +16,30 @@
 	<body>
 		<div id="container">
 			<div class="containtsBox">
-				accountMakeFinish
-				<table style="margin: 0 auto;">
+				アカウント作成完了
+				<table>
 					<tr>
-						<td>user</td>
+						<th colspan="2">ユーザー情報</th>
+					</tr>
+					<tr>
+						<td>ユーザーID</td>
 						<td><%= request.getAttribute("userName") %></td>
 					</tr>
 					<tr>
-						<td>pass</td>
+						<td>パスワード</td>
 						<td><%= request.getAttribute("password") %></td>
 					</tr>
 					<tr>
-						<td>mail</td>
+						<td>メールアドレス</td>
 						<td><%= request.getAttribute("mail") %></td>
 					</tr>
 					<tr>
-						<td>birthday</td>
+						<td>誕生日</td>
 						<td><%= request.getAttribute("birth") %></td>
 					</tr>
 				</table>
-				<p style="text-align: right;">
-					<a href="/jApp/enquete/myPage.jsp">マイページへ</a>
-				</p>
+				<% request.setAttribute("imageLink", "finish.png"); %>
+				<jsp:include page="imageLink.jsp"></jsp:include>
 			</div>
 			<jsp:include page="footLink.html"></jsp:include>
 		</div>

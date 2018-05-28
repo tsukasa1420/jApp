@@ -16,13 +16,11 @@ import enquete.Java.LogProcess;
 @WebServlet("/MyPage")
 public class MyPage extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		response.setContentType("text/html; charset=UTF-8");
-//		PrintWriter out = response.getWriter();
-
 		LogProcess log = new LogProcess();
 
 		// ログイン処理かログアウト処理かを取得し、判断する
 		String logStr = request.getParameter("log");
+
 		if( logStr.equals("out") ) log.outFunc(request, response);
 		if( logStr.equals("in") ) log.inFunc(request, response);
 	}

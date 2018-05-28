@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import enquete.Java.Enquete;
 
-
 @WebServlet("/EnqueteOperate")
 public class EnqueteOperate extends HttpServlet {
 	/**
@@ -19,33 +18,30 @@ public class EnqueteOperate extends HttpServlet {
 		アンケートの回答を受け取ってDBへ格納するために動いている。
 	*/
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		response.setContentType("text/html; charset=UTF-8");
 		request.setCharacterEncoding("UTF-8");
-//		PrintWriter out = response.getWriter();
-
-		// 何の操作を受け取ったかを判定
-		String ans = request.getParameter("ans");
-
-
 		Enquete enq = new Enquete();
 
+		// 何の操作を受け取ったかを判定
+		String enqOpe = request.getParameter("enq");
 
-		if (ans == null) {
-			// アンケートに答えるページで質問を表示させている
-			enq.getQuestion(request, response);
-			System.out.println("NULLPro");
-		}
-		else if(ans.equals("check") ) {
-			enq.checkProsess(request, response);
-			System.out.println("チェック");
-		}
-		else if(ans.equals("send") ) {
-			enq.setEnquete(request, response);
-			System.out.println("送信済み");
-		}
-		else {
+		if (enqOpe == null) {
 			// エラーメソッドを呼ぶ
-			System.out.println("ERROR");
+			System.out.println("ERROR - enqOpe");
+		}
+
+		// 回答の確認
+		else if( enqOpe.equals("check") ) {
+			enq.checkProsess(request, response);
+		}
+		else if( enqOpe.equals("send") ) {
+			enq.setEnquete(request, response);
+		}
+		else if( enqOpe.equals("make") ) {
+			enq.enqueteMake(request, response);
+		}
+		// アンケート回答ページで質問を表示させる
+		else {
+			enq.getQuestion(request, response, enqOpe);
 		}
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

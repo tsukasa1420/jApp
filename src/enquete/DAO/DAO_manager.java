@@ -32,13 +32,14 @@ public class DAO_manager {
 			System.out.println("Connectionクラスのエラー");
 		}
 		finally {
-			closeConnection(cone);
+			jAppClose(cone);
 		}
 	}
+
 	/**
 	coneを閉じる
 	*/
-	public void closeConnection(Connection cone) {
+	public void jAppClose(Connection cone) {
 		try {
 			if(cone == null)cone.close();
 		} catch (SQLException e) {
@@ -46,10 +47,11 @@ public class DAO_manager {
 			System.out.println("コネクションクローズ時のエラー");
 		}
 	}
+
 	/**
 	psを閉じる
 	*/
-	public void closePreparedStatement(PreparedStatement ps) {
+	public void jAppClose(PreparedStatement ps) {
 		try {
 			if(ps == null)ps.close();
 		} catch (SQLException e) {
@@ -57,10 +59,11 @@ public class DAO_manager {
 			System.out.println("プリペアードステートメントクローズ時のエラー");
 		}
 	}
+
 	/**
 	rsを閉じる
 	*/
-	public void closeResultSet(ResultSet rs) {
+	public void jAppClose(ResultSet rs) {
 		try {
 			if(rs == null)rs.close();
 		} catch (SQLException e) {
@@ -68,4 +71,36 @@ public class DAO_manager {
 			System.out.println("プリペアードステートメントクローズ時のエラー");
 		}
 	}
+
+	/**
+	coneとpsを閉じる
+	*/
+	public void jAppClose( PreparedStatement ps, Connection cone ) {
+		jAppClose(ps);
+		jAppClose(cone);
+	}
+
+	/**
+	coneとpsとrsを閉じる
+	*/
+	public void jAppClose( PreparedStatement ps, ResultSet rs, Connection cone ) {
+		jAppClose(ps);
+		jAppClose(rs);
+		jAppClose(cone);
+	}
+
+	/**
+	SQLエラー時のメッセージ、エラーログの表示
+	*/
+	public void errMesSQL( SQLException e, String errPlace ) {
+		e.printStackTrace();
+		System.out.println( errPlace + " : SQL" );
+	}
+
+
+
+
+
+
+
 }

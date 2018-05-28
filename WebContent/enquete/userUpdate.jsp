@@ -26,9 +26,12 @@
 	<body>
 		<div id="container">
 			<div class="containtsBox">
-				変更するよ
+				ユーザー情報変更
 				<form action="/jApp/UserEdit" method="post">
-					<table style="margin: 0 auto;">
+					<table>
+						<tr>
+							<th colspan="3">質問</th>
+						</tr>
 						<tr>
 							<!-- ユーザー名を編集する場合 -->
 							<c:if test="${ edit eq 'id' }" >
@@ -66,12 +69,11 @@
 								<input type="hidden" name="Edit" value="DELETE">
 							</c:if>
 							<td>
-								<input type="submit" value="実行">
+								<input type="submit" value="実行" class="submit userUpdateButton">
 							</td>
 						</tr>
 					</table>
 				</form>
-				<br>
 			</div>
 			<jsp:include page="footLink.html"></jsp:include>
 		</div>

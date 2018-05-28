@@ -6,13 +6,12 @@ import java.sql.SQLException;
 
 import enquete.Java.BeanUser;
 
-public class DAO_user {
+public class DAO_user extends DAO_manager{
 	/**
 	ログイン時、DBから一致するユーザー情報を取得する
 	*/
 	public boolean login( String userId, String password ) {
-		DAO_manager dm = new DAO_manager();
-		if( dm.cone == null ) dm.useDB();
+		if( cone == null ) useDB();
 
 		// SQLを使う準備。
 		PreparedStatement ps =null;
@@ -22,38 +21,19 @@ public class DAO_user {
 		try {
 			// SQL命令実行
 			sql = "SELECT * FROM user_table WHERE id=? AND pass=?";
-			ps = dm.cone.prepareStatement(sql);
+			ps = cone.prepareStatement(sql);
 			ps.setString(1, userId);
 			ps.setString(2, password);
 			rs = ps.executeQuery();
 
-// いらない？↓↓↓
-			// DBの選択した1行を読む。
-//			rs.next();
-
-			// DBの1行のデータを取得する。
-//			String name	= rs.getString("id");
-//			String pass	= rs.getString("pass");
-
-
-//			// 取得したデータを豆に入れる。
-//			BeanUser mame = new BeanUser(name, pass);
-//
-//			/* ◆◆◆ */System.out.println("DB名\t\t：" + mame.getUserName() + "<DAO_user.login>");
-//			/* ◆◆◆ */System.out.println("DBパス\t：" + mame.getPassword() + "<DAO_user.login>");
-// いらない？↑↑↑
-
-
 			return rs.next();
 		}
 		catch (SQLException e) {
-			System.out.println("login ERROR");
+			errMesSQL(e, "ログイン時エラー");
 			return false;
 		}
 		finally {
-			dm.closePreparedStatement(ps);
-			dm.closeResultSet(rs);
-			dm.closeConnection(dm.cone);
+			jAppClose(ps, rs, cone);
 		}
 	}
 
@@ -61,8 +41,7 @@ public class DAO_user {
 	ユーザー登録処理
 	*/
 	public boolean userMake( String userId, String password, String mail, int birth ) {
-		DAO_manager dm = new DAO_manager();
-		if( dm.cone == null ) dm.useDB();
+		if( cone == null ) useDB();
 
 		// SQLを使う準備。
 		String sql = null;
@@ -70,7 +49,7 @@ public class DAO_user {
 
 		try {
 			sql ="INSERT INTO user_table( id, pass, mail, birthday ) VALUES( ?, ?, ?, ? );";
-			ps = dm.cone.prepareStatement(sql);
+			ps = cone.prepareStatement(sql);
 
 			// 「?」に置き換えるものを記述している
 			ps.setString(1, userId);
@@ -82,13 +61,13 @@ public class DAO_user {
 			ps.executeUpdate();
 
 			return true;
-		} catch (SQLException e) {
-			System.out.println("SQL ERROR・userMake");
+		}
+		catch (SQLException e) {
+			errMesSQL(e, "アカウント作成時のエラー");
 			return false;
 		}
 		finally {
-			dm.closePreparedStatement(ps);
-			dm.closeConnection(dm.cone);
+			jAppClose(ps, cone);
 		}
 	}
 
@@ -96,8 +75,7 @@ public class DAO_user {
 	ユーザー情報ページでユーザー情報を表示
 	*/
 	public BeanUser userInfoFunc(String userId) {
-		DAO_manager dm = new DAO_manager();
-		if( dm.cone == null ) dm.useDB();
+		if( cone == null ) useDB();
 
 		// SQLを使う準備。
 		PreparedStatement ps =null;
@@ -107,7 +85,7 @@ public class DAO_user {
 		try {
 			// SQL命令実行
 			sql = "SELECT * FROM user_table WHERE id=?";
-			ps = dm.cone.prepareStatement(sql);
+			ps = cone.prepareStatement(sql);
 			ps.setString(1, userId);
 			rs = ps.executeQuery();
 
@@ -123,13 +101,11 @@ public class DAO_user {
 			return new BeanUser(name, pass, mail, birth);
 		}
 		catch (SQLException e) {
-			System.out.println("login ERROR");
+			errMesSQL(e, "ユーザー情報ページでの取得エラー");
 			return null;
 		}
 		finally {
-			dm.closePreparedStatement(ps);
-			dm.closeResultSet(rs);
-			dm.closeConnection(dm.cone);
+			jAppClose(ps, rs, cone);
 		}
 	}
 
@@ -137,8 +113,7 @@ public class DAO_user {
 	ユーザー情報の変更
 	*/
 	public boolean userInfoUpdate( String id, String edit, String newData ) {
-		DAO_manager dm = new DAO_manager();
-		if( dm.cone == null ) dm.useDB();
+		if( cone == null ) useDB();
 
 		// SQLを使う準備。
 		PreparedStatement ps =null;
@@ -147,12 +122,7 @@ public class DAO_user {
 		try {
 			// SQL命令実行
 			sql = "UPDATE user_table SET " + edit + " = ? WHERE id = ?";
-			ps = dm.cone.prepareStatement(sql);
-
-			/* ◆◆◆ */System.out.println( edit + " : userInfoUpdate()" );
-			/* ◆◆◆ */System.out.println( newData + " : userInfoUpdate()" );
-			/* ◆◆◆ */System.out.println( id + " : userInfoUpdate()" );
-
+			ps = cone.prepareStatement(sql);
 			ps.setString(1, newData);
 			ps.setString(2, id);
 			ps.executeUpdate();
@@ -160,12 +130,11 @@ public class DAO_user {
 			return true;
 		}
 		catch (SQLException e) {
-			System.out.println("UPDATE ERROR");
+			errMesSQL(e, "ユーザー情報の変更時のエラー");
 			return false;
 		}
 		finally {
-			dm.closePreparedStatement(ps);
-			dm.closeConnection(dm.cone);
+			jAppClose(ps, cone);
 		}
 	}
 
@@ -173,8 +142,7 @@ public class DAO_user {
 	アカウント削除
 	*/
 	public boolean userInfoDelete(String id) {
-		DAO_manager dm = new DAO_manager();
-		if( dm.cone == null ) dm.useDB();
+		if( cone == null ) useDB();
 
 		// SQLを使う準備。
 		PreparedStatement ps =null;
@@ -183,9 +151,7 @@ public class DAO_user {
 		try {
 			// SQL命令実行
 			sql = "DELETE FROM user_table WHERE id=?";
-			ps = dm.cone.prepareStatement(sql);
-
-			/* ◆◆◆ */System.out.println( id + " : DAO_user.userInfoDelete()" );
+			ps = cone.prepareStatement(sql);
 
 			ps.setString(1, id);
 			ps.executeUpdate();
@@ -193,12 +159,11 @@ public class DAO_user {
 			return true;
 		}
 		catch (SQLException e) {
-			System.out.println("DELETE ERROR");
+			errMesSQL(e, "アカウント削除時のエラー");
 			return false;
 		}
 		finally {
-			dm.closePreparedStatement(ps);
-			dm.closeConnection(dm.cone);
+			jAppClose(ps, cone);
 		}
 	}
 }

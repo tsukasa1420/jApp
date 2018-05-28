@@ -30,14 +30,17 @@
 				ユーザー情報
 				<!-- ユーザー名かパスワードが間違っていた場合 -->
 				<c:if test="${ message ne null }" >${ message }</c:if>
-				<table style="margin: 0 auto;">
+				<table>
+					<tr>
+						<th colspan="3">ユーザー情報</th>
+					</tr>
 					<tr>
 						<td>ユーザーID</td>
 						<td><%= beanU.getUserName() %></td>
 						<td>
 							<form action="/jApp/UserEdit" method="post">
 								<input type="hidden" name="Edit" value="id">
-								<input type="submit" value="変更">
+								<input type="submit" value="変更" class="submit">
 							</form>
 						</td>
 					</tr>
@@ -47,7 +50,7 @@
 						<td>
 							<form action="/jApp/UserEdit" method="post">
 								<input type="hidden" name="Edit" value="pass">
-								<input type="submit" value="変更">
+								<input type="submit" value="変更" class="submit">
 							</form>
 						</td>
 					</tr>
@@ -57,7 +60,7 @@
 						<td>
 							<form action="/jApp/UserEdit" method="post">
 								<input type="hidden" name="Edit" value="mail">
-								<input type="submit" value="変更">
+								<input type="submit" value="変更" class="submit">
 							</form>
 						</td>
 					</tr>
@@ -67,7 +70,7 @@
 						<td>
 							<form action="/jApp/UserEdit" method="post">
 								<input type="hidden" name="Edit" value="birthday">
-								<input type="submit" value="変更">
+								<input type="submit" value="変更" class="submit">
 							</form>
 						</td>
 					</tr>
@@ -75,7 +78,7 @@
 				<form action="/jApp/UserEdit" method="post">
 					<p style="text-align: right;">
 						<input type="hidden" name="Edit" value="del">
-						<input type="submit" value="アカウント削除">
+						<input type="submit" value="アカウント削除" class="submit attention">
 					</p>
 				</form>
 			</div>
